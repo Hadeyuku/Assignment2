@@ -6,11 +6,16 @@ class TodolistsController < ApplicationController
 
   def create
     book = Book.new(book_params)
-    book.save
-    redirect_to todolist_path(book.id)
+    if book.save
+    flash[:notice] = 'book was successfully created'
+      redirect_to todolist_path(book.id)
+    else
+      render 'todolists/index'
+    end
   end
 
   def index
+  	@book = Book.new
     @books = Book.all
   end
 
@@ -22,13 +27,17 @@ class TodolistsController < ApplicationController
   end
   def update
   	book = Book.find(params[:id])
-    book.update(book_params)
-    redirect_to todolist_path(book.id)
+  	if book.update(book_params)
+    flash[:success] = 'book was successfully updated'
+      redirect_to todolist_path(book.id)
+    else
+      render 'todolists/index'
+    end
   end
   def destroy
   	book = Book.find(params[:id])
     book.destroy
-    redirect_to new_todolist_path
+    redirect_to index_todolist_path
   end
 
 
